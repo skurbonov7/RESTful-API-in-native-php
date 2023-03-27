@@ -1,6 +1,7 @@
 <?php
-include_once('dbInstance.php');
+include_once('core/dbInstance.php');
 
+//Получаем все посты
 function getAllPosts()
 {
     $sql = "SELECT * FROM posts ORDER BY title DESC";
@@ -10,6 +11,7 @@ function getAllPosts()
     return json_encode($posts);
 }
 
+//Получаем конктретный пост по id
 function messagesOne(int $id)
 {
     $sql = "SELECT * FROM posts WHERE id = $id";
@@ -28,29 +30,47 @@ function messagesOne(int $id)
     }
 }
 
+//Добавляем пост
 function addPost(array $fields)
 {
     $db = dbInstance();
     $sql = "INSERT INTO `posts` (`title`, `body`) VALUES (:title, :body)";
-    $query = $db->prepare($sql);
-    $query->bindParam(':title', $fields['title']);
-    $query->bindParam(':body', $fields['body']);
-    $query->execute();
-    dbCheckError($query);
-
+    dbQuery($sql, $fields);
+    
     http_response_code(201);
     $res = [
         'status' => true,
         'post_id' => $db->lastInsertId()
     ];
     echo json_encode($res);
+    return true;
 }
 
+function updatePost(int $id, array $data)
+{
+    $db = dbInstance();
+    $title = $data['title'];
+    $body = $data['body'];
+    $sql = "UPDATE `posts` SET `title` = '$title', `body` = '$body' WHERE `id` = '$id'";
+    dbQuery($sql);
+
+    http_response_code(200);
+    $res = [
+        'status' => true,
+        'post_id' => 'Post is updated'
+    ];
+    echo json_encode($res);
+    return true;
+}
+
+//Парсим url
 function parseUrl($url)
 {
+    //разделяем url для получения id
     $params = explode('/', $url);
     $cnt = count($params);
 
+    //Убираем последний слеш с url
     if ($params[$cnt - 1] === '') {
         unset($params[$cnt - 1]);
     }
