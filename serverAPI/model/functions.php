@@ -48,7 +48,6 @@ function addPost(array $fields)
 
 function updatePost(int $id, array $data)
 {
-    $db = dbInstance();
     $title = $data['title'];
     $body = $data['body'];
     $sql = "UPDATE `posts` SET `title` = '$title', `body` = '$body' WHERE `id` = '$id'";
