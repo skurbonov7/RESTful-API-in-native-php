@@ -63,8 +63,20 @@ function updatePost(int $id, array $data)
     return true;
 }
 
+function deletePost(int $id){
+    $sql = "DELETE FROM `posts` WHERE  `id` = '$id'";
+    dbQuery($sql);
+
+    $res = [
+        'status' => true,
+        'post_id' => 'Post is deleted'
+    ];
+    echo json_encode($res);
+    return true;
+}
+
 //Парсим url
-function parseUrl($url)
+function parseUrl(string $url)
 {
     //разделяем url для получения id
     $params = explode('/', $url);

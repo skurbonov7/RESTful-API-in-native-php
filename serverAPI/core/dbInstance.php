@@ -13,7 +13,6 @@ function dbInstance(): PDO
 
 function dbQuery(string $sql, array $params = []): PDOStatement
 {
-    //die(var_dump($params    ));
     $db = dbInstance();
     $query = $db->prepare($sql);
     $query->execute($params);
